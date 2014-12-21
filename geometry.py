@@ -42,10 +42,13 @@ class Model:
 class Material:
     def __init__(self):
         self.texture = 'unknown'
+        self.texture2 = ''
         self.ambient = [0.0, 0.0, 0.0]
         self.diffuse = [0.8, 0.8, 0.8]
         self.specular = [0.5, 0.5, 0.5]
         self.state = 0
+        self.version = 2
+        self.lod = 0
 
 class ModelFormat:
     def read(self, filename, model, params):
