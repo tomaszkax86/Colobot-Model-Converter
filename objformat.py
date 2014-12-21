@@ -1,9 +1,72 @@
 #-*- coding: utf-8 -*-
-# contains implementation of Wavefront .OBJ importer
+# Contains implementation of Wavefront .OBJ importer
 # Copyright (c) 2014 Tomasz Kapuściński
 
 import re
 import geometry
+
+class ObjFormat(geometry.ModelFormat):
+    def read(self, filename, model, params):
+        # lists with parsed vertex attributes
+        vertex_coords = []
+        tex_coords = []
+        normals = []
+        materials = {}
+
+        # read file
+        file = open(filename, 'r')
+
+        # parse lines
+        while True:
+            line = file.readline()
+
+            if len(line) == 0:
+                break
+
+            if line[len(line)-1] == '\n':
+                line = line[:len(line)-1]
+
+            parts = line.split(' ')
+
+            if parts[0] == 'mtllib':
+                name = parts[1]
+                materials = read_mtl_file(name)
+            elif parts[0] == 'v':
+                vertex_coords.append(geometry.VertexCoord(float(parts[1]), float(parts[2]), -float(parts[3])))
+            elif parts[0] == 'vt':
+                tex_coords.append(geometry.TexCoord(float(parts[1]), 1 - float(parts[2])))
+            elif parts[0] == 'vn':
+                normals.append(geometry.Normal(float(parts[1]), float(parts[2]), -float(parts[3])))
+            elif parts[0] == 'usemtl':
+                current_material = materials[parts[1]]
+            elif parts[0] == 'f':
+                polygon = []
+
+                # parse vertices
+                for i in range(1, len(parts)):
+                    elements = parts[i].split('/')
+
+                    vert_coord = vertex_coords[int(elements[0]) - 1]
+                    tex_coord = tex_coords[int(elements[1]) - 1]
+                    normal = normals[int(elements[2]) - 1]
+
+                    polygon.append(geometry.Vertex(vert_coord, tex_coord, normal))
+
+                # triangulate polygon
+                new_triangles = geometry.triangulate(polygon)
+
+                # save vertices
+                for triangle in new_triangles:
+                    triangle.material = current_material
+                    model.triangles.append(triangle)
+
+        file.close()
+
+
+# register obj format
+def register(formats):
+    formats['obj'] = ObjFormat()
+    
 
 # state regex pattern
 state_pattern = re.compile(r'^.+(\[(.+?)\])$')
@@ -86,67 +149,3 @@ def read_mtl_file(filename):
     file.close()
 
     return materials
-
-
-# reads model in Wavefront .OBJ file
-def read_obj_model(filename):
-
-    # lists with parsed vertex attributes
-    vertex_coords = []
-    tex_coords = []
-    normals = []
-    materials = {}
-
-    # list for resulting triangles
-    model = geometry.Model()
-
-    # read file
-    file = open(filename, 'r')
-
-    # parse lines
-    while True:
-        line = file.readline()
-
-        if len(line) == 0:
-            break
-
-        if line[len(line)-1] == '\n':
-            line = line[:len(line)-1]
-
-        parts = line.split(' ')
-
-        if parts[0] == 'mtllib':
-            name = parts[1]
-            materials = read_mtl_file(name)
-        elif parts[0] == 'v':
-            vertex_coords.append(geometry.VertexCoord(float(parts[1]), float(parts[2]), -float(parts[3])))
-        elif parts[0] == 'vt':
-            tex_coords.append(geometry.TexCoord(float(parts[1]), 1 - float(parts[2])))
-        elif parts[0] == 'vn':
-            normals.append(geometry.Normal(float(parts[1]), float(parts[2]), -float(parts[3])))
-        elif parts[0] == 'usemtl':
-            current_material = materials[parts[1]]
-        elif parts[0] == 'f':
-            polygon = []
-
-            # parse vertices
-            for i in range(1, len(parts)):
-                elements = parts[i].split('/')
-
-                vert_coord = vertex_coords[int(elements[0]) - 1]
-                tex_coord = tex_coords[int(elements[1]) - 1]
-                normal = normals[int(elements[2]) - 1]
-
-                polygon.append(geometry.Vertex(vert_coord, tex_coord, normal))
-
-            # triangulate polygon
-            new_triangles = geometry.triangulate(polygon)
-
-            # save vertices
-            for triangle in new_triangles:
-                triangle.material = current_material
-                model.triangles.append(triangle)
-
-    file.close()
-
-    return model

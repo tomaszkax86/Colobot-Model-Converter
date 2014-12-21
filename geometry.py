@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-# implements Colobot geometry specification
+# Implements Colobot geometry specification
 # Copyright (c) 2014 Tomasz Kapuściński
 
 class VertexCoord:
@@ -46,6 +46,19 @@ class Material:
         self.diffuse = [0.8, 0.8, 0.8]
         self.specular = [0.5, 0.5, 0.5]
         self.state = 0
+
+class ModelFormat:
+    def read(self, filename, model, params):
+        raise ModelFormatException('Reading not implemented')
+    
+    def write(self, filename, model, params):
+        raise ModelFormatException('Writing not implemented')
+
+class ModelFormatException(Exception):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return 'Model format error: {}'.format(message)
 
 # triangulates polygon
 def triangulate(vertices):
