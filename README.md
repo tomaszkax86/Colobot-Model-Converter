@@ -21,7 +21,15 @@ For example, to convert .obj file to Colobot format, use can use following comma
 converter.py -i box.obj -if obj -o box.txt -of colobot
 ```
 
-List of available switches:
+By default Colobot format version 2 is used for output. If you need version 1, you need to add output parameter like this:
+
+```
+converter.py -i box.obj -if obj -o box.txt -of colobot -op version=1
+```
+
+
+Command line switches
+---------------------
 
 Switch             | Description
 -------------------|----------------------------------------
@@ -43,13 +51,13 @@ Changelog
 ---------
 
 - 1.3
--- code refactored
--- added simple and extensible API for format conversion
--- added command line switches
+  - code refactored
+  - added simple and extensible API for format conversion
+  - added command line switches
 - 1.2
--- code refactored, split into separate files
+  - code refactored, split into separate files
 - 1.1
--- added alternate state specification
--- default output format version changed to 2
+  - added alternate state specification
+  - default output format version changed to 2
 - 1.0
--- state specification in material name ("Material [state]")
+  - state specification in material name ("Material [state]")
