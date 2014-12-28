@@ -20,15 +20,17 @@ class Normal:
         self.z = z
 
 class Vertex:
-    def __init__(self, vertex, tex, normal):
+    def __init__(self, vertex, normal, tex1, tex2 = TexCoord(0.0, 0.0)):
         self.x = vertex.x
         self.y = vertex.y
         self.z = vertex.z
-        self.u = tex.u
-        self.v = tex.v
         self.nx = normal.x
         self.ny = normal.y
         self.nz = normal.z
+        self.u1 = tex1.u
+        self.v1 = tex1.v
+        self.u2 = tex2.u
+        self.v2 = tex2.v
 
 class Triangle:
     def __init__(self):
@@ -43,9 +45,9 @@ class Material:
     def __init__(self):
         self.texture = 'unknown'
         self.texture2 = ''
-        self.ambient = [0.0, 0.0, 0.0]
-        self.diffuse = [0.8, 0.8, 0.8]
-        self.specular = [0.5, 0.5, 0.5]
+        self.ambient = [0.0, 0.0, 0.0, 0.0]
+        self.diffuse = [0.8, 0.8, 0.8, 0.0]
+        self.specular = [0.5, 0.5, 0.5, 0.0]
         self.state = 0
         self.version = 2
         self.lod = 0

@@ -57,3 +57,4 @@ target/
 *.txt
 *.obj
 *.mtl
+*.mod

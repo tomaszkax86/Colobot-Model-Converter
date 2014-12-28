@@ -50,7 +50,7 @@ class ObjFormat(geometry.ModelFormat):
                     tex_coord = tex_coords[int(elements[1]) - 1]
                     normal = normals[int(elements[2]) - 1]
 
-                    polygon.append(geometry.Vertex(vert_coord, tex_coord, normal))
+                    polygon.append(geometry.Vertex(vert_coord, normal, tex_coord))
 
                 # triangulate polygon
                 new_triangles = geometry.triangulate(polygon)

@@ -48,8 +48,20 @@ Below are listed all formats supported by this converter. A given format can hav
 
 Format name      | Access     | Description
 -----------------|------------|---------------------------
-colobot          | read/write | Colobot new text format
+colobot          | write      | Default Colobot format (currently: old binary format)
+old              | write      | Old Colobot binary format (.mod files)
+new_txt          | read/write | New Colobot text format
 obj              | read only  | Wavefront .OBJ format
+
+
+Format specific options
+-----------------------
+
+- old
+  - *dirt* - specifies dirt texture number, defaults to 0
+- new_txt
+  - *dirt* - specifies dirt texture name, defaults to none
+  - *version* - specifies format version, defaults to 2
 
 
 State specification
@@ -88,6 +100,9 @@ opaque_color        | 1048576 | Opaque color
 Changelog
 ---------
 
+- 1.3.1
+  - added support for writing old Colobot model format files
+  - added parameter to specify dirt texture
 - 1.3
   - code refactored
   - added simple and extensible API for format conversion
