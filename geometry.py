@@ -52,19 +52,6 @@ class Material:
         self.version = 2
         self.lod = 0
 
-class ModelFormat:
-    def read(self, filename, model, params):
-        raise ModelFormatException('Reading not implemented')
-    
-    def write(self, filename, model, params):
-        raise ModelFormatException('Writing not implemented')
-
-class ModelFormatException(Exception):
-    def __init__(self, message):
-        self.message = message
-    def __str__(self):
-        return 'Model format error: {}'.format(message)
-
 # triangulates polygon
 def triangulate(vertices):
     result = []

@@ -3,9 +3,10 @@
 # Copyright (c) 2014 Tomasz Kapuściński
 
 import re
+import modelformat
 import geometry
 
-class ObjFormat(geometry.ModelFormat):
+class ObjFormat(modelformat.ModelFormat):
     def read(self, filename, model, params):
         # lists with parsed vertex attributes
         vertex_coords = []
@@ -63,10 +64,10 @@ class ObjFormat(geometry.ModelFormat):
         file.close()
 
 
-# register obj format
-def register(formats):
-    formats['obj'] = ObjFormat()
-    
+modelformat.register_format('obj', ObjFormat())
+
+modelformat.register_extension('obj', 'obj')
+
 
 # state regex pattern
 state_pattern = re.compile(r'^.+(\[(.+?)\])$')

@@ -1,11 +1,12 @@
 #-*- coding: utf-8 -*-
-# Implements Colobot model format writing
+# Implements Colobot model formats
 # Copyright (c) 2014 Tomasz Kapuściński
 
+import modelformat
 import geometry
 import struct
 
-class ColobotNewTextFormat(geometry.ModelFormat):
+class ColobotNewTextFormat(modelformat.ModelFormat):
     def read(self, filename, model, params):
         file = open(filename, 'r')
         
@@ -107,7 +108,7 @@ class ColobotNewTextFormat(geometry.ModelFormat):
 
         file.close()
 
-class ColobotOldFormat(geometry.ModelFormat):
+class ColobotOldFormat(modelformat.ModelFormat):
     def write(self, filename, model, params):
         file = open(filename, 'wb')
         
@@ -161,11 +162,6 @@ class ColobotOldFormat(geometry.ModelFormat):
         file.close()
 
 
-def register(formats):
-    formats['colobot'] = ColobotOldFormat()
-    formats['new_txt'] = ColobotNewTextFormat()
-    formats['old'] = ColobotOldFormat();
-
 def parse_vertex(values):
     vertex_coord = geometry.VertexCoord(float(values[2]), float(values[3]), float(values[4]))
     normal = geometry.Normal(float(values[6]), float(values[7]), float(values[8]))
@@ -179,3 +175,11 @@ def parse_material(material, values):
         material.diffuse[i] = float(values[2+i])
         material.ambient[i] = float(values[7+i])
         material.specular[i] = float(values[12+i])
+
+
+modelformat.register_format('colobot', ColobotOldFormat())
+modelformat.register_format('old', ColobotOldFormat())
+modelformat.register_format('new_txt', ColobotNewTextFormat())
+
+modelformat.register_extension('mod', 'old')
+modelformat.register_extension('txt', 'new_txt')

@@ -1,29 +1,24 @@
 #-*- coding: utf-8 -*-
 # Colobot Model Converter
-# Version 1.2
+# Version 1.4
 # Copyright (c) 2014 Tomasz Kapuściński
 
 import sys
 import geometry
+import modelformat
 import objformat
 import colobotformat
-
-# register model formats
-formats = {}
-
-objformat.register(formats)
-colobotformat.register(formats)
 
 # parse arguments
 i = 1
 n = len(sys.argv)
 
 in_filename = ''
-in_format = ''
+in_format = 'default'
 in_params = {}
 
 out_filename = ''
-out_format = ''
+out_format = 'default'
 out_params = {}
 
 while i < n:
@@ -54,7 +49,5 @@ while i < n:
         raise Exception('Unknown switch: {}'.format(arg))
 
 # convert file
-model = geometry.Model()
 
-formats[in_format].read(in_filename, model, in_params)
-formats[out_format].write(out_filename, model, out_params)
+modelformat.convert(in_format, in_filename, in_params, out_format, out_filename, out_params)

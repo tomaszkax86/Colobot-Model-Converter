@@ -1,9 +1,7 @@
-Colobot-Model-Converter
+Colobot Model Converter
 =======================
 
 This program can be used to convert various 3D model formats to and from model formats used by Colobot.
-
-For now only conversion from Wavefront .OBJ format to Colobot new text format (version 1 and 2) is supported.
 
 
 Basic usage
@@ -15,16 +13,17 @@ To convert one format to another you need to run this program in terminal.
 converter.py [switches]
 ```
 
-For example, to convert .obj file to Colobot format, use can use following command:
+The most basic case is when you just specify files. Actual format will be determined by extension. For example, extension "obj" means Wavefront .OBJ format and "mod" extension means old Colobot binary format.
+To specify input file you use "-i" switch and to specify output file you use "-o" switch. For example, to convert .obj file to new Colobot text format, use can use following command:
 
 ```
-converter.py -i box.obj -if obj -o box.txt -of colobot
+converter.py -i box.obj -o box.txt
 ```
 
-By default Colobot format version 2 is used for output. If you need version 1, you need to add output parameter like this:
+You can specify formats manually with "-if" and "-of" switches. They mean input and output formats respectively. You can also add parameters using "-ip" and "-op" switches. For example, by default Colobot format version 2 is used for output. If you need version 1, you need to add output parameter like this:
 
 ```
-converter.py -i box.obj -if obj -o box.txt -of colobot -op version=1
+converter.py -i box.obj -if obj -o box.txt -of new_txt -op version=1
 ```
 
 
@@ -44,14 +43,15 @@ Switch             | Description
 Supported formats
 -----------------
 
-Below are listed all formats supported by this converter. A given format can have read only, write only and read/write access. Read only means you can convert this format to something else but not into it. Write only means you can convert other format to this format but can't convert from it. Read/write means you can convert to and from this format.
+Below are listed all formats supported by this converter. A given format can have read only, write only and read/write access. Read only means you can convert this format to something else but not into it. Write only means you can convert other format to this format but can't convert from it. Read/write means you can convert to and from this format. Format might have assigned default extension.
 
-Format name      | Access     | Description
------------------|------------|---------------------------
-colobot          | write      | Default Colobot format (currently: old binary format)
-old              | write      | Old Colobot binary format (.mod files)
-new_txt          | read/write | New Colobot text format
-obj              | read only  | Wavefront .OBJ format
+Format name      | Extension  | Access     | Description
+-----------------|------------|------------|-------------------------------------------------------------------------
+default          |            | depends    | Default format that uses filename extension to determine actual format
+colobot          |            | write only | Default Colobot format (currently: old binary format)
+old              | mod        | write only | Old Colobot binary format (.mod files)
+new_txt          | txt        | read/write | New Colobot text format
+obj              | obj        | read only  | Wavefront .OBJ format
 
 
 Format specific options
@@ -100,6 +100,13 @@ opaque_color        | 1048576 | Opaque color
 Changelog
 ---------
 
+- 1.4
+  - more refactoring
+  - split some code into additional file
+  - changed way of registering and accessing formats
+  - added registering of filename extensions
+  - added *default* format that chooses appropriate format by filename extension
+  - added filename extensions: *mod*, *txt* and *obj*
 - 1.3.1
   - added support for writing old Colobot model format files
   - added parameter to specify dirt texture
