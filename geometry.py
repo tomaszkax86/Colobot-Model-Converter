@@ -110,8 +110,8 @@ def triangulate(vertices):
 
         # reverses order
         triangle.vertices[0] = first
-        triangle.vertices[2] = second
-        triangle.vertices[1] = third
+        triangle.vertices[1] = second
+        triangle.vertices[2] = third
 
         result.append(triangle)
 
