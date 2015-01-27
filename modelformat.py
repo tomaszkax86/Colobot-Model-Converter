@@ -25,6 +25,9 @@ class ModelFormatException(Exception):
 
 # default model format -- chooses format based on filename extension
 class DefaultModelFormat(ModelFormat):
+    def __init__(self):
+        self.description = 'Default model format'
+    
     def read(self, filename, model, params):
         ext = get_extension(filename)
         format_name = extensions[ext]
@@ -68,5 +71,9 @@ def convert(in_format, in_filename, in_params, out_format, out_filename, out_par
     
     read(in_format, in_filename, model, in_params)
     write(out_format, out_filename, model, out_params)
+
+def print_formats():
+    for format in formats.keys():
+        print('{:<16}{}'.format(format, formats[format].description))
 
 register_format('default', DefaultModelFormat())

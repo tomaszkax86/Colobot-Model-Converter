@@ -54,6 +54,7 @@ docs/_build/
 target/
 
 # model formats
+*.dae
 *.txt
 *.obj
 *.mtl

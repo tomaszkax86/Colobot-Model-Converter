@@ -8,16 +8,34 @@ class VertexCoord:
         self.y = y
         self.z = z
 
+    def __eq__(self, other):
+        return abs(self.x - other.x) < 1e-3 and abs(self.y - other.y) < 1e-3 and abs(self.z - other.z) < 1e-3
+
+    def __ne__(self, other):
+        return not self == other
+
 class TexCoord:
     def __init__(self, u, v):
         self.u = u
         self.v = v
+        
+    def __eq__(self, other):
+        return abs(self.u - other.u) < 1e-3 and abs(self.v - other.v) < 1e-3
+
+    def __ne__(self, other):
+        return not self == other
 
 class Normal:
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
+        
+    def __eq__(self, other):
+        return (abs(self.x - other.x) < 1e-3) and (abs(self.y - other.y) < 1e-3) and (abs(self.z - other.z) < 1e-3)
+
+    def __ne__(self, other):
+        return not self == other
 
 class Vertex:
     def __init__(self, vertex, normal, tex1, tex2 = TexCoord(0.0, 0.0)):
@@ -43,7 +61,7 @@ class Model:
 
 class Material:
     def __init__(self):
-        self.texture = 'unknown'
+        self.texture = ''
         self.texture2 = ''
         self.ambient = [0.0, 0.0, 0.0, 0.0]
         self.diffuse = [0.8, 0.8, 0.8, 0.0]
@@ -51,6 +69,29 @@ class Material:
         self.state = 0
         self.version = 2
         self.lod = 0
+        
+    def __eq__(self, other):
+        if self.texture != other.texture:
+            return False
+        if self.texture2 != other.texture2:
+            return False
+        if self.state != other.state:
+            return False
+        if self.lod != other.lod:
+            return False
+        
+        for i in range(4):
+            if abs(self.ambient[i] - other.ambient[i]) > 1e-3:
+                return False
+            if abs(self.diffuse[i] - other.diffuse[i]) > 1e-3:
+                return False
+            if abs(self.specular[i] - other.specular[i]) > 1e-3:
+                return False
+        
+        return True
+
+    def __ne__(self, other):
+        return not self == other
 
 # triangulates polygon
 def triangulate(vertices):

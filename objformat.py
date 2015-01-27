@@ -7,6 +7,9 @@ import modelformat
 import geometry
 
 class ObjFormat(modelformat.ModelFormat):
+    def __init__(self):
+        self.description = 'Wavefront .OBJ format'
+    
     def read(self, filename, model, params):
         # lists with parsed vertex attributes
         vertex_coords = []
@@ -48,8 +51,12 @@ class ObjFormat(modelformat.ModelFormat):
                     elements = parts[i].split('/')
 
                     vert_coord = vertex_coords[int(elements[0]) - 1]
-                    tex_coord = tex_coords[int(elements[1]) - 1]
                     normal = normals[int(elements[2]) - 1]
+                    
+                    if elements[1] == '':
+                        tex_coord = geometry.TexCoord(0.0, 0.0)
+                    else:
+                        tex_coord = tex_coords[int(elements[1]) - 1]
 
                     polygon.append(geometry.Vertex(vert_coord, normal, tex_coord))
 
@@ -62,6 +69,137 @@ class ObjFormat(modelformat.ModelFormat):
                     model.triangles.append(triangle)
 
         file.close()
+    
+    
+    def write(self, filename, model, params):
+        model_file = open(filename, 'w')
+        materials_filename = filename
+
+        if materials_filename.find('.obj'):
+            materials_filename = materials_filename.replace('.obj', '.mtl')
+
+        materials_file = open(materials_filename, 'w')
+        
+        materials = []
+        vertex_coords = []
+        tex_coords = []
+        normals = []
+
+        faces = []
+
+        materials_file.write('# Materials\n')
+
+        for triangle in model.triangles:
+
+            mat = triangle.material    
+            
+            if triangle.material not in materials:
+                materials.append(mat)
+
+                name = 'Material_{}_[{}]'.format(len(materials), str(mat.state))
+
+                mat.name = name
+                materials_file.write('\n')
+                materials_file.write('newmtl {}\n'.format(name))
+                
+                if mat.texture != '':
+                    materials_file.write('map_Kd {}\n'.format(mat.texture))
+                
+                materials_file.write('Ns 96.078431\n')
+                materials_file.write('Ka {} {} {}\n'.format(mat.ambient[0], mat.ambient[1], mat.ambient[2]))
+                materials_file.write('Kd {} {} {}\n'.format(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]))
+                materials_file.write('Ks {} {} {}\n'.format(mat.specular[0], mat.specular[1], mat.specular[2]))
+                materials_file.write('Ni 1.000000\n')
+                materials_file.write('d 1.000000\n')
+                materials_file.write('illum 2\n')
+            else:
+                for mater in materials:
+                    if mat == mater:
+                        mat = mater
+
+            face = []
+            
+            for vertex in triangle.vertices:
+                vertex_coord = geometry.VertexCoord(vertex.x, vertex.y, vertex.z)
+                tex_coord = geometry.TexCoord(vertex.u1, vertex.v1)
+                normal = geometry.Normal(vertex.nx, vertex.ny, vertex.nz)
+
+                # looking for vertex coordinate
+                vertex_coord_index = -1
+
+                for i in range(len(vertex_coords)):
+                    if vertex_coord == vertex_coords[i]:
+                        vertex_coord_index = i
+
+                if vertex_coord_index == -1:
+                    vertex_coord_index = len(vertex_coords)
+                    vertex_coords.append(vertex_coord)
+
+                # looking for texture coordinate
+                tex_coord_index = -1
+
+                for i in range(len(tex_coords)):
+                    if tex_coord == tex_coords[i]:
+                        tex_coord_index = i
+
+                if tex_coord_index == -1:
+                    tex_coord_index = len(tex_coords)
+                    tex_coords.append(tex_coord)
+
+                # looking for normal
+                normal_index = -1
+
+                for i in range(len(normals)):
+                    if normal == normals[i]:
+                        normal_index = i
+
+                if normal_index == -1:
+                    normal_index = len(normals)
+                    normals.append(normal)
+
+                for mat in materials:
+                    if mat == triangle.material:
+                        mat_name = mat.name
+
+                vertex_indices = [ vertex_coord_index + 1, tex_coord_index + 1, normal_index + 1, mat_name ]
+
+                face.append(vertex_indices)
+
+            faces.append(face)
+
+        # write vertex coordinates
+        model_file.write('mtllib {}\n'.format(materials_filename))
+        
+        for v in vertex_coords:
+            model_file.write('v {} {} {}\n'.format(v.x, v.y, v.z))
+
+        for t in tex_coords:
+            model_file.write('vt {} {}\n'.format(t.u, t.v))
+
+        for n in normals:
+            model_file.write('vn {} {} {}\n'.format(n.x, n.y, n.z))
+
+        mat_name = ''
+
+        model_file.write('s off\n')
+
+        # write faces
+        for f in faces:
+            name = f[0][3]
+
+            if name != mat_name:
+                model_file.write('usemtl {}\n'.format(name))
+                mat_name = name
+
+            model_file.write('f')
+
+            for v in f:
+                model_file.write(' {}/{}/{}'.format(v[0], v[1], v[2]))
+
+            model_file.write('\n')
+
+        model_file.close()
+        materials_file.close()
 
 
 modelformat.register_format('obj', ObjFormat())
@@ -108,6 +246,10 @@ def parse_state(text):
         state |= int(value)
 
     return state
+
+# encode state
+def encode_state(state):
+    return str(state)
 
 # reads Wavefront .MTL material file
 def read_mtl_file(filename):

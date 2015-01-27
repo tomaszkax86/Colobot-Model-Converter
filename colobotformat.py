@@ -7,10 +7,14 @@ import geometry
 import struct
 
 class ColobotNewTextFormat(modelformat.ModelFormat):
+    def __init__(self):
+        self.description = 'Colobot New Text format'
+    
     def read(self, filename, model, params):
         file = open(filename, 'r')
         
         triangle = geometry.Triangle()
+        materials = []
         
         while True:
             line = file.readline()
@@ -41,7 +45,7 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
             elif cmd == 'p3':
                 triangle.vertices[2] = parse_vertex(values)
             elif cmd == 'mat':
-                parse_material(triangle.material, values)
+                triangle.material = parse_material(values)
             elif cmd == 'tex1':
                 triangle.material.texture = values[1]
             elif cmd == 'tex2':
@@ -52,6 +56,19 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
                 triangle.material.lod = int(values[1])
             elif cmd == 'state':
                 triangle.material.state = int(values[1])
+
+                mat_final = None
+
+                for mat in materials:
+                    if triangle.material == mat:
+                        mat_final = mat
+
+                if mat_final is None:
+                    mat_final = triangle.material
+                    materials.append(mat_final)
+
+                triangle.material = mat_final
+                
                 model.triangles.append(triangle)
                 triangle = geometry.Triangle()
         
@@ -80,7 +97,7 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
             for i in range(3):
                 vertex = triangle.vertices[i]
                 file.write('p{} c {} {} {}'.format(i+1, vertex.x, vertex.y, vertex.z))
-                file.write(' n {} {} {}'.format(vertex.nz, vertex.ny, vertex.nz))
+                file.write(' n {} {} {}'.format(vertex.nx, vertex.ny, vertex.nz))
                 file.write(' t1 {} {}'.format(vertex.u1, vertex.v1))
                 file.write(' t2 {} {}\n'.format(vertex.u2, vertex.v2))
 
@@ -109,6 +126,9 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
         file.close()
 
 class ColobotOldFormat(modelformat.ModelFormat):
+    def __init__(self):
+        self.description = 'Colobot Old Binary format'
+    
     def write(self, filename, model, params):
         file = open(filename, 'wb')
         
@@ -170,11 +190,15 @@ def parse_vertex(values):
     
     return geometry.Vertex(vertex_coord, normal, tex_coord_1, tex_coord_2)
 
-def parse_material(material, values):
+def parse_material(values):
+    material = geometry.Material()
+    
     for i in range(4):
         material.diffuse[i] = float(values[2+i])
         material.ambient[i] = float(values[7+i])
         material.specular[i] = float(values[12+i])
+    
+    return material
 
 
 modelformat.register_format('colobot', ColobotOldFormat())
