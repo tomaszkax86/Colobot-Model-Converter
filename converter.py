@@ -34,8 +34,14 @@ while i < n:
         in_format = sys.argv[i+1]
         i = i + 2
     elif arg == '-ip':
-        pair = sys.argv[i+1].split('=')
-        in_params[pair[0]] = pair[1]
+        text = sys.argv[i+1]
+        
+        if '=' in text:
+            pair = text.split('=')
+            in_params[pair[0]] = pair[1]
+        else:
+            in_params[text] = None
+        
         i = i + 2
     elif arg == '-o':
         out_filename = sys.argv[i+1]

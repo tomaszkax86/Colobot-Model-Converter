@@ -27,6 +27,8 @@ class ObjFormat(modelformat.ModelFormat):
         if modelformat.get_param(params, 'flipX') != None: flipX = -1.0
         if modelformat.get_param(params, 'flipY') != None: flipY = -1.0
         if modelformat.get_param(params, 'flipZ') != None: flipZ = -1.0
+        
+        flipOrder = (flipX * flipY * flipZ) < 0
 
         # parse lines
         while True:
@@ -69,7 +71,7 @@ class ObjFormat(modelformat.ModelFormat):
                     polygon.append(geometry.Vertex(vert_coord, normal, tex_coord))
 
                 # triangulate polygon
-                new_triangles = geometry.triangulate(polygon)
+                new_triangles = geometry.triangulate(polygon, flipOrder)
 
                 # save vertices
                 for triangle in new_triangles:
@@ -102,6 +104,8 @@ class ObjFormat(modelformat.ModelFormat):
         if modelformat.get_param(params, 'flipX') != None: flipX = -1.0
         if modelformat.get_param(params, 'flipY') != None: flipY = -1.0
         if modelformat.get_param(params, 'flipZ') != None: flipZ = -1.0
+        
+        flipOrder = (flipX * flipY * flipZ) < 0
 
         materials_file.write('# Materials\n')
 

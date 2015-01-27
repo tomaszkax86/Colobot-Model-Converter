@@ -94,7 +94,7 @@ class Material:
         return not self == other
 
 # triangulates polygon
-def triangulate(vertices):
+def triangulate(vertices, flipOrder = False):
     result = []
 
     first = vertices[0]
@@ -109,6 +109,11 @@ def triangulate(vertices):
         triangle = Triangle()
 
         # reverses order
+        if flipOrder:
+            temp = second
+            second = third
+            third = temp
+        
         triangle.vertices[0] = first
         triangle.vertices[1] = second
         triangle.vertices[2] = third
