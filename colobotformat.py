@@ -163,7 +163,7 @@ class ColobotOldFormat(modelformat.ModelFormat):
             file.write(struct.pack('=f', 0.0))                                                                      # power
             
             # texture name
-            file.write(mat.texture)
+            file.write(mat.texture.encode('utf-8'))
             
             # texture name padding
             for i in range(20 - len(mat.texture)):
