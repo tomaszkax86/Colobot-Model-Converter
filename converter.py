@@ -44,11 +44,20 @@ while i < n:
         out_format = sys.argv[i+1]
         i = i + 2
     elif arg == '-op':
-        pair = sys.argv[i+1].split('=')
-        out_params[pair[0]] = pair[1]
+        text = sys.argv[i+1]
+        
+        if '=' in text:
+            pair = text.split('=')
+            out_params[pair[0]] = pair[1]
+        else:
+            out_params[text] = None
+        
         i = i + 2
     elif arg == '-f':
         modelformat.print_formats()
+        exit()
+    elif arg == '-ext':
+        modelformat.print_extensions()
         exit()
     else:
         raise Exception('Unknown switch: {}'.format(arg))

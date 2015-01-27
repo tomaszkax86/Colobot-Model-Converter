@@ -32,11 +32,15 @@ Command line switches
 
 Switch             | Description
 -------------------|----------------------------------------
+-ext               | Lists all available default extensions and exits
+-f                 | Lists all available formats and exits
 -i *filename*      | Sets input file name to *filename*
 -if *format*       | Sets input format to *format*
+-ip *name*         | Adds input format parameter *name* with no value
 -ip *key*=*value*  | Adds input format parameter *key* with value *value*
 -o *filename*      | Sets output file name to *filename*
 -of *format*       | Sets output format to *format*
+-op *name*         | Adds output format parameter *name* with no value
 -op *key*=*value*  | Adds output format parameter *key* with value *value*
 
 
@@ -51,7 +55,7 @@ default          |            | depends    | Default format that uses filename e
 colobot          |            | write only | Default Colobot format (currently: old binary format)
 old              | mod        | write only | Old Colobot binary format (.mod files)
 new_txt          | txt        | read/write | New Colobot text format
-obj              | obj        | read only  | Wavefront .OBJ format
+obj              | obj        | read/write | Wavefront .OBJ format
 
 
 Format specific options
@@ -62,6 +66,10 @@ Format specific options
 - new_txt
   - *dirt* - specifies dirt texture name, defaults to none
   - *version* - specifies format version, defaults to 2
+- obj
+  - *flipX* - flips axis X during import/export
+  - *flipY* - flips axis Y during import/export
+  - *flipZ* - flips axis Z during import/export
 
 
 State specification
@@ -100,6 +108,11 @@ opaque_color        | 1048576 | Opaque color
 Changelog
 ---------
 
+- 1.5
+  - added support for writing Wavefront OBJ files
+  - added switches for *obj* format
+  - added base for COLLADA format (not yet useful)
+  - added *-ext* switch
 - 1.4
   - more refactoring
   - split some code into additional file

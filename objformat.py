@@ -20,6 +20,14 @@ class ObjFormat(modelformat.ModelFormat):
         # read file
         file = open(filename, 'r')
 
+        flipX = 1.0
+        flipY = 1.0
+        flipZ = 1.0
+
+        if modelformat.get_param(params, 'flipX') != None: flipX = -1.0
+        if modelformat.get_param(params, 'flipY') != None: flipY = -1.0
+        if modelformat.get_param(params, 'flipZ') != None: flipZ = -1.0
+
         # parse lines
         while True:
             line = file.readline()
@@ -36,11 +44,11 @@ class ObjFormat(modelformat.ModelFormat):
                 name = parts[1]
                 materials = read_mtl_file(name)
             elif parts[0] == 'v':
-                vertex_coords.append(geometry.VertexCoord(float(parts[1]), float(parts[2]), -float(parts[3])))
+                vertex_coords.append(geometry.VertexCoord(flipX * float(parts[1]), flipY * float(parts[2]), flipZ * float(parts[3])))
             elif parts[0] == 'vt':
                 tex_coords.append(geometry.TexCoord(float(parts[1]), 1 - float(parts[2])))
             elif parts[0] == 'vn':
-                normals.append(geometry.Normal(float(parts[1]), float(parts[2]), -float(parts[3])))
+                normals.append(geometry.Normal(flipX * float(parts[1]), flipY * float(parts[2]), flipZ * float(parts[3])))
             elif parts[0] == 'usemtl':
                 current_material = materials[parts[1]]
             elif parts[0] == 'f':
@@ -86,6 +94,14 @@ class ObjFormat(modelformat.ModelFormat):
         normals = []
 
         faces = []
+
+        flipX = 1.0
+        flipY = 1.0
+        flipZ = 1.0
+
+        if modelformat.get_param(params, 'flipX') != None: flipX = -1.0
+        if modelformat.get_param(params, 'flipY') != None: flipY = -1.0
+        if modelformat.get_param(params, 'flipZ') != None: flipZ = -1.0
 
         materials_file.write('# Materials\n')
 
@@ -171,13 +187,13 @@ class ObjFormat(modelformat.ModelFormat):
         model_file.write('mtllib {}\n'.format(materials_filename))
         
         for v in vertex_coords:
-            model_file.write('v {} {} {}\n'.format(v.x, v.y, v.z))
+            model_file.write('v {} {} {}\n'.format(flipX * v.x, flipY * v.y, flipZ * v.z))
 
         for t in tex_coords:
             model_file.write('vt {} {}\n'.format(t.u, t.v))
 
         for n in normals:
-            model_file.write('vn {} {} {}\n'.format(n.x, n.y, n.z))
+            model_file.write('vn {} {} {}\n'.format(flipX * n.x, flipY * n.y, flipZ * n.z))
 
         mat_name = ''
 

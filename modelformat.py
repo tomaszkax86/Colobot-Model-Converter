@@ -76,4 +76,19 @@ def print_formats():
     for format in formats.keys():
         print('{:<16}{}'.format(format, formats[format].description))
 
+def print_extensions():
+    for ext in extensions.keys():
+        format = extensions[ext]
+        desc = formats[format].description
+
+        print('{:<8}{}'.format(ext, desc))
+
+# returns parameter value
+def get_param(params, name, default = None):
+    if name in params:
+        return params[name]
+    else:
+        return default
+
+
 register_format('default', DefaultModelFormat())
