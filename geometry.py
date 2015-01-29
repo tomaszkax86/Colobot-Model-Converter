@@ -38,7 +38,7 @@ class Normal:
         return not self == other
 
 class Vertex:
-    def __init__(self, vertex, normal, tex1, tex2 = TexCoord(0.0, 0.0)):
+    def __init__(self, vertex = VertexCoord(0, 0, 0), normal = Normal(0, 0, 0), tex1 = TexCoord(0.0, 0.0), tex2 = TexCoord(0.0, 0.0)):
         self.x = vertex.x
         self.y = vertex.y
         self.z = vertex.z
@@ -52,7 +52,7 @@ class Vertex:
 
 class Triangle:
     def __init__(self):
-        self.vertices = [0, 0, 0]
+        self.vertices = [Vertex(), Vertex(), Vertex()]
         self.material = Material()
 
 class Model:

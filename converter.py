@@ -40,7 +40,7 @@ while i < n:
             pair = text.split('=')
             in_params[pair[0]] = pair[1]
         else:
-            in_params[text] = None
+            in_params[text] = 'none'
         
         i = i + 2
     elif arg == '-o':
@@ -56,7 +56,7 @@ while i < n:
             pair = text.split('=')
             out_params[pair[0]] = pair[1]
         else:
-            out_params[text] = None
+            out_params[text] = 'none'
         
         i = i + 2
     elif arg == '-f':

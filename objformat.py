@@ -18,7 +18,7 @@ class ObjFormat(modelformat.ModelFormat):
         materials = {}
 
         # read file
-        file = open(filename, 'r')
+        input_file = open(filename, 'r')
 
         flipX = 1.0
         flipY = 1.0
@@ -32,7 +32,7 @@ class ObjFormat(modelformat.ModelFormat):
 
         # parse lines
         while True:
-            line = file.readline()
+            line = input_file.readline()
 
             if len(line) == 0:
                 break
@@ -78,7 +78,7 @@ class ObjFormat(modelformat.ModelFormat):
                     triangle.material = current_material
                     model.triangles.append(triangle)
 
-        file.close()
+        input_file.close()
     
     
     def write(self, filename, model, params):
@@ -213,8 +213,13 @@ class ObjFormat(modelformat.ModelFormat):
 
             model_file.write('f')
 
-            for v in f:
-                model_file.write(' {}/{}/{}'.format(v[0], v[1], v[2]))
+            if flipOrder:
+                model_file.write(' {}/{}/{}'.format(f[0][0], f[0][1], f[0][2]))
+                model_file.write(' {}/{}/{}'.format(f[2][0], f[2][1], f[2][2]))
+                model_file.write(' {}/{}/{}'.format(f[1][0], f[1][1], f[1][2]))
+            else:
+                for v in f:
+                    model_file.write(' {}/{}/{}'.format(v[0], v[1], v[2]))
 
             model_file.write('\n')
 
@@ -275,10 +280,10 @@ def encode_state(state):
 def read_mtl_file(filename):
     materials = {}
 
-    file = open(filename, 'r')
+    input_file = open(filename, 'r')
 
     while True:
-        line = file.readline()
+        line = input_file.readline()
 
         if len(line) == 0:
             break
@@ -309,6 +314,6 @@ def read_mtl_file(filename):
         elif parts[0] == 'map_Kd':
             current_material.texture = parts[1]
 
-    file.close()
+    input_file.close()
 
     return materials
