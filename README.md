@@ -20,7 +20,7 @@ To specify input file you use "-i" switch and to specify output file you use "-o
 converter.py -i box.obj -o box.txt
 ```
 
-You can specify formats manually with "-if" and "-of" switches. They mean input and output formats respectively. You can also add parameters using "-ip" and "-op" switches. For example, by default Colobot format version 2 is used for output. If you need version 1, you need to add output parameter like this:
+You can specify formats manually with "-if" and "-of" switches. They mean input and output formats respectively. You can also add parameters using "-ip" and "-op" switches. For example, by default text Colobot format version 2 is used for output. If you need version 1, you need to add output parameter like this:
 
 ```
 converter.py -i box.obj -if obj -o box.txt -of new_txt -op version=1
@@ -52,8 +52,8 @@ Below are listed all formats supported by this converter. A given format can hav
 Format name      | Extension  | Access     | Description
 -----------------|------------|------------|-------------------------------------------------------------------------
 default          |            | depends    | Default format that uses filename extension to determine actual format
-colobot          |            | write only | Default Colobot format (currently: old binary format)
-old              | mod        | write only | Old Colobot binary format (.mod files)
+colobot          |            | read/write | Default Colobot format (currently: old binary format)
+old              | mod        | read/write | Old Colobot binary format (.mod files) version 1.2 only
 new_txt          | txt        | read/write | New Colobot text format
 obj              | obj        | read/write | Wavefront .OBJ format
 
@@ -108,6 +108,8 @@ opaque_color        | 1048576 | Opaque color
 Changelog
 ---------
 
+- 1.5.1
+  - added support for reading old Colobot format version 1.2
 - 1.5
   - added support for writing Wavefront OBJ files
   - added switches for *obj* format
