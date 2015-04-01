@@ -9,6 +9,9 @@ import struct
 class ColobotNewTextFormat(modelformat.ModelFormat):
     def __init__(self):
         self.description = 'Colobot New Text format'
+        
+    def get_extension(self):
+        return 'txt'
     
     def read(self, filename, model, params):
         input_file = open(filename, 'r')
@@ -73,6 +76,8 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
                 triangle = geometry.Triangle()
         
         input_file.close()
+        
+        return True
     
     def write(self, filename, model, params):
         output_file = open(filename, 'w')
@@ -124,12 +129,17 @@ class ColobotNewTextFormat(modelformat.ModelFormat):
             output_file.write('\n')
 
         output_file.close()
+        
+        return True
 
 
 class ColobotOldFormat(modelformat.ModelFormat):
     def __init__(self):
         self.description = 'Colobot Old Binary format'
-       
+        
+    def get_extension(self):
+        return 'mod'
+    
     def read(self, filename, model, params):
         input_file = open(filename, 'rb')
         
@@ -140,7 +150,8 @@ class ColobotOldFormat(modelformat.ModelFormat):
         triangle_count = struct.unpack('=i', input_file.read(4))[0]
 
         if version_major != 1 or version_minor != 2:
-            raise ModelFormatException('Unsupported format version: {}.{}'.format(version_major, version_minor))
+            print('Unsupported format version: {}.{}'.format(version_major, version_minor))
+            return False
 
         # read and ignore padding
         input_file.read(40)
@@ -214,6 +225,8 @@ class ColobotOldFormat(modelformat.ModelFormat):
             # end of triangle
         
         input_file.close()
+        
+        return True
     
     
     def write(self, filename, model, params):
@@ -267,6 +280,8 @@ class ColobotOldFormat(modelformat.ModelFormat):
             output_file.write(struct.pack('=HHH', 0, 0, 0))                # reserved
         
         output_file.close()
+        
+        return True
 
 
 def parse_vertex(values):

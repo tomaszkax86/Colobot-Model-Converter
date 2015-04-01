@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # Colobot Model Converter
-# Version 1.4
+# Version 1.6
 # Copyright (c) 2014 Tomasz Kapuściński
 
 import sys
@@ -16,11 +16,14 @@ import colobotformat
 i = 1
 n = len(sys.argv)
 
-in_filename = ''
+batch_mode = False
+file_list = []
+
+in_filename = None
 in_format = 'default'
 in_params = {}
 
-out_filename = ''
+out_filename = None
 out_format = 'default'
 out_params = {}
 
@@ -59,6 +62,22 @@ while i < n:
             out_params[text] = 'none'
         
         i = i + 2
+    elif arg == '-batch':
+        batch_mode = True
+        i = i + 1
+    elif arg == '-add':
+        file_list.append(sys.argv[i+1])
+        i = i + 2
+    elif arg == '-addlist':
+        listfile = open(sys.argv[i+1], 'r')
+        
+        for line in listfile.readlines():
+            if len(line) == 0: continue
+            if line[-1] == '\n': line = line[:-1]
+            file_list.append(line)
+        
+        listfile.close();
+        i = i + 2
     elif arg == '-f':
         modelformat.print_formats()
         exit()
@@ -70,4 +89,7 @@ while i < n:
 
 # convert file
 
-modelformat.convert(in_format, in_filename, in_params, out_format, out_filename, out_params)
+if batch_mode:
+    modelformat.convert_list(file_list, in_format, in_params, out_format, out_params)
+else:
+    modelformat.convert(in_format, in_filename, in_params, out_format, out_filename, out_params)

@@ -9,6 +9,9 @@ import geometry
 class ObjFormat(modelformat.ModelFormat):
     def __init__(self):
         self.description = 'Wavefront .OBJ format'
+        
+    def get_extension(self):
+        return 'obj'
     
     def read(self, filename, model, params):
         # lists with parsed vertex attributes
@@ -79,6 +82,8 @@ class ObjFormat(modelformat.ModelFormat):
                     model.triangles.append(triangle)
 
         input_file.close()
+        
+        return True
     
     
     def write(self, filename, model, params):
@@ -225,6 +230,8 @@ class ObjFormat(modelformat.ModelFormat):
 
         model_file.close()
         materials_file.close()
+        
+        return True
 
 
 modelformat.register_format('obj', ObjFormat())

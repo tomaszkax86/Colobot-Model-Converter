@@ -10,6 +10,9 @@ from xml.dom import minidom
 class COLLADAFormat(modelformat.ModelFormat):
     def __init__(self):
         self.description = 'COLLADA .dae format'
+        
+    def get_extension(self):
+        return 'dae'
     
     def read(self, filename, model, params):
         xmldoc = minidom.parse(filename)
@@ -55,7 +58,7 @@ class COLLADAFormat(modelformat.ModelFormat):
             print(text)
             print(' ')
         
-        return model
+        return True
 
 
 

@@ -27,21 +27,48 @@ converter.py -i box.obj -if obj -o box.txt -of new_txt -op version=1
 ```
 
 
+Batch mode
+----------
+
+Batch mode allows you to process multiple files at once. "-i" and "-o" switches are ignored and files are added using "-add" switch instead. You can also make a list of files, put them in text file and use "-addlist" switch to add entire list of files at once.
+
+Files are specified either as single file using "-add filename" or as two files using "-add filename1:filename2". In first case, *filename* specifies input filename and output filename will be guessed based on output format. If output format is not specified explicitly, convertion cannot be performed and warning will be issued. In second case, input filename is *filename1* and output filename is *filename2*. Output format will be guessed based on filename extension if not specified explicitly with "-of" switch.
+
+Examples of usage:
+
+```
+converter.py -batch -add model1.obj:model1.mod -add model2.obj:model2.mod
+converter.py -batch -of old -add model1.obj -add model2.obj
+converter.py -batch -of old -addlist models.txt
+```
+
+models.txt file:
+
+```
+model1.obj
+model2.obj
+```
+
+
 Command line switches
 ---------------------
 
-Switch             | Description
--------------------|----------------------------------------
--ext               | Lists all available default extensions and exits
--f                 | Lists all available formats and exits
--i *filename*      | Sets input file name to *filename*
--if *format*       | Sets input format to *format*
--ip *name*         | Adds input format parameter *name* with no value
--ip *key*=*value*  | Adds input format parameter *key* with value *value*
--o *filename*      | Sets output file name to *filename*
--of *format*       | Sets output format to *format*
--op *name*         | Adds output format parameter *name* with no value
--op *key*=*value*  | Adds output format parameter *key* with value *value*
+Switch                             | Description
+-----------------------------------|----------------------------------------
+-add *filename*                    | Adds single file for batch mode processing. Output filename will be automatically found if possible.
+-add *filename1*:*filename2*       | Adds single file for batch mode processing. Output filename specified explicitly.
+-addlist *filename*                | Processes file *filename* and adds each line exactly like *-add* switch.
+-batch                             | Enables batch mode for processing multiple files.
+-ext                               | Lists all available default extensions and exits.
+-f                                 | Lists all available formats and exits.
+-i *filename*                      | Sets input file name to *filename*.
+-if *format*                       | Sets input format to *format*.
+-ip *name*                         | Adds input format parameter *name* with no value.
+-ip *key*=*value*                  | Adds input format parameter *key* with value *value*.
+-o *filename*                      | Sets output file name to *filename*.
+-of *format*                       | Sets output format to *format*.
+-op *name*                         | Adds output format parameter *name* with no value.
+-op *key*=*value*                  | Adds output format parameter *key* with value *value*.
 
 
 Supported formats
@@ -108,6 +135,9 @@ opaque_color        | 1048576 | Opaque color
 Changelog
 ---------
 
+- 1.6
+  - added batch mode for processing multiple files
+  - added console messages for converted files
 - 1.5.1
   - added support for reading old Colobot format version 1.2
 - 1.5
