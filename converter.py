@@ -85,7 +85,8 @@ while i < n:
         modelformat.print_extensions()
         exit()
     else:
-        raise Exception('Unknown switch: {}'.format(arg))
+        print('Unknown switch: {}'.format(arg))
+        exit()
 
 # convert file
 

@@ -121,7 +121,7 @@ class ObjFormat(modelformat.ModelFormat):
             if triangle.material not in materials:
                 materials.append(mat)
 
-                name = 'Material_{}_[{}]'.format(len(materials), str(mat.state))
+                name = 'Material_{}_[{}]'.format(len(materials), geometry.decode_state(mat.state))
 
                 mat.name = name
                 materials_file.write('\n')
@@ -242,47 +242,6 @@ modelformat.register_extension('obj', 'obj')
 # state regex pattern
 state_pattern = re.compile(r'^.+(\[(.+?)\])$')
 
-# state dictionary
-state_dictionary = {}
-
-state_dictionary['normal'] = 0                      # normal texture
-state_dictionary['ttexture_black'] = 1 << 0         # black texture is transparent
-state_dictionary['ttexture_white'] = 1 << 1         # white texture is transparent
-state_dictionary['ttexture_diffuse'] = 1 << 2       # transparent texture
-state_dictionary['wrap'] = 1 << 3                   # wrap mode
-state_dictionary['clamp'] = 1 << 4                  # clamp mode
-state_dictionary['light'] = 1 << 5                  # completely bright
-state_dictionary['dual_black'] = 1 << 6             # dual black ?
-state_dictionary['dual_white'] = 1 << 7             # dual white ?
-state_dictionary['part1'] = 1 << 8                  # part 1
-state_dictionary['part2'] = 1 << 9                  # part 2
-state_dictionary['part3'] = 1 << 10                 # part 3
-state_dictionary['part4'] = 1 << 11                 # part 4
-state_dictionary['2face'] = 1 << 12                 # render both faces
-state_dictionary['alpha'] = 1 << 13                 # alpha channel is transparency
-state_dictionary['second'] = 1 << 14                # use second texture
-state_dictionary['fog'] = 1 << 15                   # render fog
-state_dictionary['tcolor_black'] = 1 << 16          # black color is transparent
-state_dictionary['tcolor_white'] = 1 << 17          # white color is transparent
-state_dictionary['text'] = 1 << 18                  # used for rendering text
-state_dictionary['opaque_texture'] = 1 << 19        # opaque texture
-state_dictionary['opaque_color'] = 1 << 20          # opaque color
-
-# parses material state
-def parse_state(text):
-    state = 0
-
-    for value in text.split(','):
-        if value in state_dictionary:
-            value = state_dictionary[value]
-        state |= int(value)
-
-    return state
-
-# encode state
-def encode_state(state):
-    return str(state)
-
 # reads Wavefront .MTL material file
 def read_mtl_file(filename):
     materials = {}
@@ -306,7 +265,7 @@ def read_mtl_file(filename):
             match = state_pattern.match(parts[1])
 
             if match is not None:
-                current_material.state = parse_state(match.group(2))
+                current_material.state = geometry.encode_state(match.group(2))
 
             materials[parts[1]] = current_material
         elif parts[0] == 'Ka':
