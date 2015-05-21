@@ -29,22 +29,25 @@ out_params = {}
 
 while i < n:
     arg = sys.argv[i]
-    
+
     if arg == '-i':
         in_filename = sys.argv[i+1]
         i = i + 2
     elif arg == '-if':
         in_format = sys.argv[i+1]
         i = i + 2
+    elif arg == '-id':
+        in_params['directory'] = sys.argv[i+1]
+        i = i + 2
     elif arg == '-ip':
         text = sys.argv[i+1]
-        
+
         if '=' in text:
             pair = text.split('=')
             in_params[pair[0]] = pair[1]
         else:
             in_params[text] = 'none'
-        
+
         i = i + 2
     elif arg == '-o':
         out_filename = sys.argv[i+1]
@@ -52,15 +55,18 @@ while i < n:
     elif arg == '-of':
         out_format = sys.argv[i+1]
         i = i + 2
+    elif arg == '-od':
+        out_params['directory'] = sys.argv[i+1]
+        i = i + 2
     elif arg == '-op':
         text = sys.argv[i+1]
-        
+
         if '=' in text:
             pair = text.split('=')
             out_params[pair[0]] = pair[1]
         else:
             out_params[text] = 'none'
-        
+
         i = i + 2
     elif arg == '-batch':
         batch_mode = True
@@ -70,12 +76,12 @@ while i < n:
         i = i + 2
     elif arg == '-addlist':
         listfile = open(sys.argv[i+1], 'r')
-        
+
         for line in listfile.readlines():
             if len(line) == 0: continue
             if line[-1] == '\n': line = line[:-1]
             file_list.append(line)
-        
+
         listfile.close();
         i = i + 2
     elif arg == '-f':
